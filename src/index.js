@@ -18,4 +18,12 @@ function renderDog(dog) {
     <td><button>Edit Dog</button></td>
   `
   tableBody.append(tableRow);
+  tableRow.querySelector("button").addEventListener("click", () => handleEditClick(dog))
+}
+
+function handleEditClick(dog) {
+  const dogFormInputs = document.querySelectorAll("#dog-form input");
+  dogFormInputs[0].value = dog.name;
+  dogFormInputs[1].value = dog.breed;
+  dogFormInputs[2].value = dog.sex;
 }
