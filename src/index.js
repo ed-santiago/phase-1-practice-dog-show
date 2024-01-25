@@ -1,15 +1,20 @@
 const tableBody = document.querySelector("#table-body");
-
-
+const dogFormInputs = document.querySelectorAll("#dog-form input");
+const dogName = dogFormInputs[0];
+const dogBreed = dogFormInputs[1];
+const dogSex = dogFormInputs[2];
 console.log(tableBody);
 
 fetch("http://localhost:3000/dogs")
   .then(res => res.json())
-  .then(dogs => dogs.forEach(dog => {
-    renderDog(dog)
-  }))
+  .then(dogs => {
+    dogs.forEach(dog => {
+      renderDog(dog)
+    })
+  })
 
 function renderDog(dog) {
+
   const tableRow = document.createElement("tr");
   tableRow.innerHTML = `
     <td>${dog.name}</td>
@@ -22,8 +27,38 @@ function renderDog(dog) {
 }
 
 function handleEditClick(dog) {
-  const dogFormInputs = document.querySelectorAll("#dog-form input");
-  dogFormInputs[0].value = dog.name;
-  dogFormInputs[1].value = dog.breed;
-  dogFormInputs[2].value = dog.sex;
+  const dogForm = document.querySelector("#dog-form")
+  dogName.value = dog.name;
+  dogBreed.value = dog.breed;
+  dogSex.value = dog.sex;
+
+  dogForm.addEventListener("submit", (e) => handleSubmit(e, dog))
+}
+
+function handleSubmit(e, dog) {
+  e.preventDefault();
+  fetch(`http://localhost:3000/dogs/${dog.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+    },
+    body: JSON.stringify({
+      name: dogName.value,
+      breed: dogBreed.value,
+      sex: dogSex.value,
+    })
+  })
+    .then(res => res.json())
+    .then(() => {
+      document.querySelector("#dog-form").reset();
+      fetch("http://localhost:3000/dogs")
+        .then(res => res.json())
+        .then(dogs => {
+          tableBody.innerHTML = "";
+          dogs.forEach(dog => {
+            renderDog(dog)
+          })
+        })
+    })
 }
