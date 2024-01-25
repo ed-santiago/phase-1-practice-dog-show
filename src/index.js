@@ -13,6 +13,7 @@ fetch("http://localhost:3000/dogs")
     })
   })
 
+//Render dog list in table rows
 function renderDog(dog) {
 
   const tableRow = document.createElement("tr");
@@ -26,6 +27,7 @@ function renderDog(dog) {
   tableRow.querySelector("button").addEventListener("click", () => handleEditClick(dog))
 }
 
+//When edit dog is clicked, the dog data fills in the form
 function handleEditClick(dog) {
   const dogForm = document.querySelector("#dog-form")
   dogName.value = dog.name;
@@ -35,6 +37,7 @@ function handleEditClick(dog) {
   dogForm.addEventListener("submit", (e) => handleSubmit(e, dog))
 }
 
+//Dog data is updated if user enters something different in the form
 function handleSubmit(e, dog) {
   e.preventDefault();
   fetch(`http://localhost:3000/dogs/${dog.id}`, {
